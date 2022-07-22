@@ -11,6 +11,9 @@ namespace UdpMonitor
             if(UdpMonitor.Properties.Settings.Default.Size != null && !System.Drawing.Size.Empty.Equals(UdpMonitor.Properties.Settings.Default.Size))
                 this.Size = UdpMonitor.Properties.Settings.Default.Size;
 
+            if (UdpMonitor.Properties.Settings.Default.Font != null)
+                this.Font = UdpMonitor.Properties.Settings.Default.Font;
+
             tabPorts.AddPort(new System.Net.IPEndPoint(System.Net.IPAddress.Any, 514));
 
             txtPort.Enter += (sender, e) => this.AcceptButton = btnAddPort;
