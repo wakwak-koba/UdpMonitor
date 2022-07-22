@@ -1,12 +1,13 @@
 # UdpMonitor
 
-# �@�\
-- �w��̃|�[�g�� UDP �p�P�b�g��҂��󂯂��A��M�����d���𑊎�斈�ɕۑ����܂��B
-- ��M�d����I������Ɠ��e���N���b�v�{�[�h�ɓ���܂��B
-- �I����Ԃŕ\���͈͂̓��b�N����܂��B
-- �E�N���b�N�Ŗ��I����Ԃɖ߂�\���͈͂̃��b�N�͉����܂��B
+# 機能
+- 指定のポートで UDP パケットを待ち受けし、受信した電文を相手先毎に保存します。
+- 受信電文を選択すると内容がクリップボードに入ります。
+- 選択状態で表示範囲はロックされます。
+- 右クリックで未選択状態に戻り表示範囲のロックは解けます。
+- syslog（514/udp）は最初から待ち受けします。
 
 ![image](docs/image.png)
 
-### ����
-- ���\�t�g���p�P�b�g����M�ł���悤�� Windows �� Firewall �ݒ���ɂ߂ĉ������B
+### 注意
+- 当ソフトがパケットを受信できるように Windows の Firewall 設定を緩めて下さい。
