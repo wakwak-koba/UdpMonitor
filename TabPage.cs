@@ -11,6 +11,7 @@ namespace UdpMonitor
         {
             msgText = new Message();
             this.Controls.Add(msgText);
+            this.Text = addr.ToString();
             Address = addr;
         }
 
