@@ -16,10 +16,26 @@ namespace UdpMonitor
         }
 
         public void Add(int port, byte[] buffer) => msgText.Add(port, buffer);
+        public void Clear() => msgText.Clear();
+
+        public void ToClipboard() {
+            msgText.ToClipboard(); 
+        }
     }
 
     internal class TabControlClients : System.Windows.Forms.TabControl
     {
+        public TabControlClients() : base() {
+            this.MouseDoubleClick += (sender, e) =>
+            {
+                if (e.Button == System.Windows.Forms.MouseButtons.Right && this.SelectedTab is TabPageClient tabPage && SelectedTab != null)
+                {
+                    tabPage.ToClipboard();
+                    tabPage.Clear();
+                }
+            };
+        }
+
         public void Add(System.Net.IPEndPoint ep, byte[] buffer)
         {
             var tab = this.TabPages.OfType<TabPageClient>().Where(t => t.Address.Equals(ep.Address)).FirstOrDefault();
