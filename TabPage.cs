@@ -9,19 +9,22 @@ namespace UdpMonitor
 
         public TabPageClient(System.Net.IPAddress addr) : base()
         {
-            msgText = new Message();
+            msgText = new Message() { Dock = System.Windows.Forms.DockStyle.Fill };
             this.Controls.Add(msgText);
             this.Text = addr.ToString();
+            this.Enter += (sender, e) => msgText.OnEnterParent();
             Address = addr;
         }
 
         public void Add(int port, byte[] buffer) => msgText.Add(port, buffer);
+
         public void Clear() => msgText.Clear();
 
         public void ToClipboard() {
             msgText.ToClipboard(); 
         }
     }
+
 
     internal class TabControlClients : System.Windows.Forms.TabControl
     {
@@ -36,13 +39,29 @@ namespace UdpMonitor
             };
         }
 
+        static System.UInt64 GetAddress(System.Net.IPAddress ip)
+        {
+            System.UInt64 result = 0;
+            var addressBytes = ip.GetAddressBytes();
+            for (int i = 0; i < addressBytes.Length; i++)
+                result += ((System.UInt64)addressBytes[i] << (8 * (3 - i)));
+            return result;
+        }
+
         public void Add(System.Net.IPEndPoint ep, byte[] buffer)
         {
             var tab = this.TabPages.OfType<TabPageClient>().Where(t => t.Address.Equals(ep.Address)).FirstOrDefault();
             if (tab == null)
             {
                 tab = new TabPageClient(ep.Address);
-                TabPages.Add(tab);
+                var insertIndex = TabPages.OfType<TabPageClient>().SkipWhile(t => GetAddress(System.Net.IPAddress.Parse(t.Text)) <  GetAddress(ep.Address));
+                if (!insertIndex.Any())
+                    TabPages.Add(tab);
+                else
+                {
+                    var insPos = TabPages.IndexOf(insertIndex.First());
+                    TabPages.Insert(insPos, tab);
+                }
             }
             tab.Add(ep.Port, buffer);
         }
