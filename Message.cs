@@ -17,11 +17,6 @@ namespace UdpMonitor
             pnlStatus.Controls.Add(new System.Windows.Forms.Label() { Text = "records:" });
             lblCount = new System.Windows.Forms.Label();
             pnlStatus.Controls.Add(lblCount);
-
-            this.Enter += (sender, e) =>
-            {
-                ;
-            };
         }
 
         public void Add(int port, byte[] buffer)
@@ -78,13 +73,13 @@ namespace UdpMonitor
             }
 
             lstMessage.EndUpdate();
-            SetDeisng();
+            SetDesign();
         }
 
         public void Clear()
         {
             tabDays.TabPages.Clear();
-            SetDeisng();
+            SetDesign();
         }
 
         public void ToClipboard() {
@@ -113,7 +108,7 @@ namespace UdpMonitor
             }
         }
 
-        public void SetDeisng()
+        public void SetDesign()
         {
             lblCount.Text = tabDays.TabPages.OfType<System.Windows.Forms.TabPage>()
                 .SelectMany(c => c.Controls.OfType<System.Windows.Forms.ListBox>())
