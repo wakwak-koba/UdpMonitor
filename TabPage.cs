@@ -16,12 +16,45 @@ namespace UdpMonitor
             Address = addr;
         }
 
-        public void Add(int port, byte[] buffer) => msgText.Add(port, buffer);
+        public void Add(int port, byte[] buffer)
+        {
+            msgText.Add(port, buffer);
+            {
+                var nm = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), string.Join("", Address.GetAddressBytes().Select(b => b.ToString().PadLeft(3, '0'))));
+                foreach(var ext in new [] { "bat", "exe"}) {
+                    var hookFile = new System.IO.FileInfo(nm + "." + ext);
+                    if(hookFile.Exists && hookFile.Length > 0)
+                    {
+                        var psInfo = new System.Diagnostics.ProcessStartInfo()
+                        {
+                            FileName = hookFile.FullName,
+                            CreateNoWindow = true,
+                            UseShellExecute = false,
+                            Arguments = new System.Net.IPEndPoint(Address, port).ToString() + " " + System.Convert.ToBase64String(buffer),
+                        };
+                        try
+                        {
+                            System.Diagnostics.Process.Start(psInfo);
+                            break;
+                        }
+                        catch (System.Exception)
+                        {
+                            ;
+                        }
+                    }
+                }
+            }
+        } 
 
         public void Clear() => msgText.Clear();
 
         public void ToClipboard() {
             msgText.ToClipboard(); 
+        }
+
+        public int Count()
+        {
+            return msgText.Count();
         }
     }
 
@@ -33,8 +66,15 @@ namespace UdpMonitor
             {
                 if (e.Button == System.Windows.Forms.MouseButtons.Right && this.SelectedTab is TabPageClient tabPage && SelectedTab != null)
                 {
-                    tabPage.ToClipboard();
-                    tabPage.Clear();
+                    if(tabPage.Count() > 0)
+                    {
+                        tabPage.ToClipboard();
+                        tabPage.Clear();
+                    }
+                    else
+                    {
+                        this.TabPages.Remove(tabPage);
+                    }
                 }
             };
         }

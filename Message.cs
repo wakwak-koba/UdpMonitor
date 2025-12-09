@@ -69,7 +69,8 @@ namespace UdpMonitor
             {
                 lstMessage.SelectedIndex = index;
                 lstMessage.ClearSelected();
-                tabDays.SelectTab(0);
+                if(tabDays.TabPages.Count > 0)
+                    tabDays.SelectTab(0);
             }
 
             lstMessage.EndUpdate();
@@ -82,11 +83,17 @@ namespace UdpMonitor
             SetDesign();
         }
 
+        public int Count()
+        {
+            return tabDays.TabPages.OfType<System.Windows.Forms.TabPage>().SelectMany(t => t.Controls.OfType<System.Windows.Forms.ListBox>()).Count();
+        }
+
         public void ToClipboard() {
             var st = new System.Text.StringBuilder();
             foreach (var lst in tabDays.TabPages.OfType<System.Windows.Forms.TabPage>().Select(t => t.Controls[0] as System.Windows.Forms.ListBox))
                 st.AppendLine(string.Join("", lst.Items.OfType<string>().Select(s => s + System.Environment.NewLine).ToArray()));
-            System.Windows.Forms.Clipboard.SetText(st.ToString());
+            if(st.Length > 0)
+                System.Windows.Forms.Clipboard.SetText(st.ToString());
         }
 
         public void ToClipboard(System.Collections.Generic.IEnumerable<string> texts)
